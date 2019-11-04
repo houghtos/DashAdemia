@@ -85,45 +85,46 @@ if __name__ == "__main__":
 	connectionObject = pymysql.connect(host= dbServerName, user= dbUser, password= dbPassword, db= dbName, charset=charSet,cursorclass=cusrorType)
 	cursorObject = connectionObject.cursor()
 
+	with open('author_data.csv') as csvfile:
+		aut_info = csv.reader(csvfile, delimiter=',')
+		for aut in aut_info:
+			print(aut)
+			last = aut[0]
+			first = aut[1]
+			middle = aut[2]
+			aut_id = aut[3]
+			department = aut[4]
+			service = aut[5]
+			alias = aut[6]
+			custom_query = aut[7]
+			title = aut[8]
+			dep = aut[9]
 
-	for aut in aut_info:
-		print(aut)
-		last = aut[0]
-		first = aut[1]
-		middle = aut[2]
-		aut_id = aut[3]
-		department = aut[4]
-		service = aut[5]
-		alias = aut[6]
-		custom_query = aut[7]
-		title = aut[8]
-		dep = aut[9]
-
-		#Generate Pubmed IDs
-		if custom_query == 0:
-			pm_ids = defaultQuery(aut)
-		else:
-			pm_ids = customQuery(aut)
-			
-
-		for j in pm_ids:
-			print(j)
-			if alias == 0:
-				try:
-					scrape_return = PM_Scrape_Default(first, middle, last, j)
-					uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
-				except:
-					print("Call failed... trying again.")
-					scrape_return = PM_Scrape_Default(first, middle, last, j)
-					uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
+			#Generate Pubmed IDs
+			if custom_query == 0:
+				pm_ids = defaultQuery(aut)
 			else:
-				try:
-					author_alias = python_keys[aut_id]
-					scrape_return = PM_Scrape_Alias(first, middle, last, j, author_alias)
-					uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
-				except:
-					print("Call failed... trying again.")
-					author_alias = python_keys[aut_id]
-					scrape_return = PM_Scrape_Alias(first, middle, last, j, author_alias)
-					uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
+				pm_ids = customQuery(aut)
+
+			#Parse the pubmed IDs and upload each to MySQL database SH_PUBMED database.
+			for j in pm_ids:
+				print(j)
+				if alias == 0:
+					try:
+						scrape_return = PM_Scrape_Default(first, middle, last, j)
+						uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
+					except:
+						print("Call failed... trying again.")
+						scrape_return = PM_Scrape_Default(first, middle, last, j)
+						uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
+				else:
+					try:
+						author_alias = python_keys[aut_id]
+						scrape_return = PM_Scrape_Alias(first, middle, last, j, author_alias)
+						uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
+					except:
+						print("Call failed... trying again.")
+						author_alias = python_keys[aut_id]
+						scrape_return = PM_Scrape_Alias(first, middle, last, j, author_alias)
+						uploadFunction(aut_id, j, scrape_return[0], scrape_return[1], scrape_return[2], scrape_return[3], scrape_return[4], scrape_return[5], scrape_return[6].replace('"',"'"), scrape_return[-1])
 	connectionObject.close()
