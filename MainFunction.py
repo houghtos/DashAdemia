@@ -4,13 +4,14 @@
 from PM_Scraper import PM_Scraper
 from PM_ID_gen import PM_ID_key, PM_ID_default
 
-#Import author information, aliases, and custom querys
+#Import author aliases, and custom querys stored in python dictionaries.  Can be changed to JSON or other data format.
 from aut_info import aut_info
 from aut_aliases import aut_aliases
 from PM_Keys import python_keys
 
 import pymysql
 import time
+import csv
 
 # Function to perform default query using author name. 
 def defaultQuery(aut):
