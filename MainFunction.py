@@ -5,7 +5,6 @@ from PM_Scraper import PM_Scraper
 from PM_ID_gen import PM_ID_key, PM_ID_default
 
 #Import author aliases, and custom querys stored in python dictionaries.  Can be changed to JSON or other data format.
-from aut_info import aut_info
 from aut_aliases import aut_aliases
 from PM_Keys import python_keys
 
@@ -84,7 +83,9 @@ if __name__ == "__main__":
 	cusrorType = pymysql.cursors.DictCursor
 	connectionObject = pymysql.connect(host= dbServerName, user= dbUser, password= dbPassword, db= dbName, charset=charSet,cursorclass=cusrorType)
 	cursorObject = connectionObject.cursor()
-
+	
+	#Open author data source file in csv format to parse.  Must be in same directory as main function.
+	#Columns from each row are declared as variables
 	with open('author_data.csv') as csvfile:
 		aut_info = csv.reader(csvfile, delimiter=',')
 		for aut in aut_info:
