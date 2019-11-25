@@ -1,7 +1,1 @@
-'rds_creds': {
-      'server_name': '',
-      'user': '',
-      'password': '',
-      'database_name': ''
-      }
-    }
+{"rds_creds": {"server_name": "", "user": "", "password": "", "database_name": ""}}
